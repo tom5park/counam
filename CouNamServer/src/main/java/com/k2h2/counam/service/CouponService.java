@@ -21,4 +21,10 @@ public class CouponService {
 	public List<Coupon> listCoupon() {
 		return this.couponMapper.listCoupon();
 	}
+	
+	@RequestMapping(value="/coupon/sendCoupon.json")
+	@ResponseBody
+	public void sendCoupon(Coupon coupon) {
+		this.couponMapper.createCoupon(coupon);
+	}
 }
