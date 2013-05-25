@@ -1,23 +1,24 @@
 package com.k2h2.counam.service;
 
-import java.util.Map;
+import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import com.k2h2.counam.manager.CouponManager;
+import com.k2h2.counam.entity.Coupon;
+import com.k2h2.counam.mapper.CouponMapper;
 
 @Controller
 public class CouponService {
 	
 	@Autowired
-	CouponManager couponManager;
+	CouponMapper couponMapper;
 	
-	@RequestMapping(value="/Coupon/listCoupon.json")
+	@RequestMapping(value="/coupon/listCoupon.json")
 	@ResponseBody
-	public Map listCoupon() {
-		return this.couponManager.listCoupon();
+	public List<Coupon> listCoupon() {
+		return this.couponMapper.listCoupon();
 	}
 }
