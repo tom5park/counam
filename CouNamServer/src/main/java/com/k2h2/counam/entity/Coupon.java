@@ -3,15 +3,27 @@ package com.k2h2.counam.entity;
 import java.util.Date;
 import java.util.UUID;
 
+import org.codehaus.jackson.map.annotate.JsonSerialize;
+
+import com.k2h2.counam.util.JsonDateSerializer;
+
 public class Coupon {
 	
 	String id = UUID.randomUUID().toString();
-	String title = "asdf";
+	String title = "밥 쿠폰";
 	String type = "TEMP";
+	String description = "조만간 밥 쏜다. 날짜 잡아라.";
+	
+	@JsonSerialize(using = JsonDateSerializer.class)
 	Date created = new Date();
 	String status = "READY";
 	String from = "123";
 	String to = "0o90sdf";
+	
+	@JsonSerialize(using = JsonDateSerializer.class)
+	Date validFrom = new Date();
+	@JsonSerialize(using = JsonDateSerializer.class)
+	Date validTo = new Date();
 	
 	public Date getCreated() {
 		return created;
@@ -69,6 +81,30 @@ public class Coupon {
 
 	public void setType(String type) {
 		this.type = type;
+	}
+
+	public String getDescription() {
+		return description;
+	}
+
+	public void setDescription(String description) {
+		this.description = description;
+	}
+
+	public Date getValidFrom() {
+		return validFrom;
+	}
+
+	public void setValidFrom(Date validFrom) {
+		this.validFrom = validFrom;
+	}
+
+	public Date getValidTo() {
+		return validTo;
+	}
+
+	public void setValidTo(Date validTo) {
+		this.validTo = validTo;
 	}
 
 }

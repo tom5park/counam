@@ -4,31 +4,255 @@
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <title>쿠폰남발</title>
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<link rel="stylesheet" href="/counam/jquery.mobile-1.3.1.min.css" />
-<script src="/counam/jquery-2.0.2.min.js"></script>
-<script src="/counam/jquery.mobile-1.3.1.min.js"></script>
+<link rel="stylesheet" href="/counam/lib/jqm/jquery.mobile-1.3.1.min.css" />
+<link rel="stylesheet" href="/counam/lib/jqm/jquery.mobile.theme-1.3.1.min.css" />
+<script src="/counam/js/jquery-2.0.2.min.js"></script>
+<script type="text/javascript">
+$(function() {
+	$('[data-role=page]').on('pageshow', function(a, b,  c) {
+		var page = eval(this.id);
+		if(!page) {
+			return;
+		}
+		if(page.onShow) {
+			page.onShow();
+		}
+	});
+	$('[data-role=page]').append($('#popup').clone());
+}); 
+
+</script>
+<script src="/counam/js/jsrender.js"></script>
+<script src="/counam/lib/jqm/jquery.mobile-1.3.1.min.js"></script>
+<script src="/counam/js/common.js"></script>
+<style type="text/css">
+.ui-li-thumb, .ui-li-icon {
+    left: 1px;
+    max-height: 80px;
+    max-width: 240px;
+    position: absolute;
+    top: 0;
+}
+.ui-li-has-thumb .ui-btn-inner a.ui-link-inherit, .ui-li-static.ui-li-has-thumb {
+	padding-left: 160px;
+}
+</style>
+<script type="text/javascript">
+(function() {
+	var po = document.createElement('script'); po.type = 'text/javascript'; po.async = true;
+	po.src = 'https://apis.google.com/js/client:plusone.js';
+	var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(po, s);
+})();
+
+function signinCallback(authResult) {
+	if (authResult['access_token']) {
+		debugger;
+		if($.mobile.activePage.is("#login")) {
+			window.location.reload();
+		}
+	} else if (authResult['error']) {
+		$.mobile.changePage("#login", {changeHash: false});
+	}
+}
+</script>
+<script type="text/javascript">
+var counam = {
+	showMsg: function(e, msg) {
+		var popup = e.find('#popup');
+		popup.find('p').html(msg)
+		popup.popup('open', { positionTo: "window", overlayTheme: 'c' });
+	}
+};
+</script>
 </head>
 <body>
+<div style="display: none;">
+	<div data-role="popup" id="popup" data-overlay-theme="a" data-theme="c" data-dismissible="false" style="max-width:400px;" class="ui-corner-all">
+	    <div data-role="header" data-theme="a" class="ui-corner-top">
+	        <h1>성공</h1>
+	    </div>
+	    <div data-role="content" data-theme="d" class="ui-corner-bottom ui-content">
+	        <h3 id="title" class="ui-title">성공</h3>
+	        <p id="msg">This action cannot be undone.</p>
+	        <div style="text-align: right;">
+	        	<a href="#" data-role="button" data-inline="true" data-rel="back" data-theme="c">확인</a>
+	        </div>
+	    </div>
+	</div>
+</div>
+
+<div data-role="page" id="start">
+</div>
+
+
+<!----------------------------------------------
+  home 
+ ------------------------------------------------>
 <div data-role="page" id="home">
 	<div data-role="content">
-		<div style="margin: 50px 0;">
-			<a href="/counam/html/test/fooDialogPage.html" data-role="button" >쿠폰발행</a>
-			<a href="#inbox" data-role="button" >받은 쿠폰</a>
+		<div style="text-align: center;"><h1>쿠폰남발</h1></div>
+		
+		<div>뿌려라~<br>애인, 친구, 짝사랑, 부모님, 직장동료, 자식 누구든 상관없다. 돈드는 거 아니다. (가끔 든다)</div>
+		<div>
+			<a href="#newCoupon" data-role="button" >쿠폰발행</a>
+			<a href="#inbox" data-role="button" >받은 쿠폰 (14)</a>
 			<a href="#outbox" data-role="button" >보낸 쿠폰</a>
+		</div>
+		<div><a href=""> - 새로운 쿠폰이 나왔어요. 단돈 천원!!</a></div>
+		<div><a href=""> - 이벤트 당첨자 발표</a></div>
+		<div><a href=""> - 쿠폰남발 출시 기념 이벤트. 꽁짜 쿠폰 증정!!</a></div>
+	</div>
+</div>
+<script type="text/javascript">
+var home = {
+	randomTo: function() {
+		
+	}	
+};
+</script>
+
+<div data-role="page" id="login">
+	<span id="signinButton">
+		<span
+			class="g-signin"
+			data-callback="signinCallback"
+			data-clientid="914307840382.apps.googleusercontent.com"
+			data-cookiepolicy="single_host_origin"
+			data-requestvisibleactions="http://schemas.google.com/AddActivity"
+			data-scope="https://www.googleapis.com/auth/plus.login">
+		</span>
+	</span>
+</div>
+
+<!----------------------------------------------
+  newCoupon
+ ------------------------------------------------>
+<div data-role="page" data-theme="d" id="newCoupon">
+	<div data-role="header" data-position="fixed">
+		<a href="#home" data-role="button" data-inline="true">취소</a>
+		<h1>쿠폰 발행</h1>
+		<a href="javascript:newCoupon.send();" data-role="button" data-inline="true">보내기</a>
+	</div>
+	<div data-role="content">
+		받는사람 <a href="#home" data-role="button" data-inline="true">카카오톡</a> <a href="#home" data-role="button" data-inline="true">내 연락처</a>
+		<input type="search" name="newCoupon.to" id="newCoupon.to" value="신민아 (010-123-4567)" />
+		<div style="text-align: center;">
+			<a href="#couponSelect"><img alt="쿠폰" src="../img/coupon/01.png"/></a>
+		</div>
+		<input type="text" id="title" name="title" value="Pick Up 쿠폰" />
+		<input type="button" name="newCoupon.description" id="newCoupon.description" value="유효기간: 2013/01/31 ~ 2013/12/31" />
+		사용법
+		<textarea rows="10" cols="">쿠폰 사용 하루 전 미리 통보.
+발행자의 부득이한 사정에 의해 쿠폰 이용이 불가능 할 경우 유효기간 연장</textarea>	    
+	</div>
+</div>
+
+<script type="text/javascript">
+var newCoupon = {
+	e: $('#newCoupon')
+	, send: function() {
+		$.mobile.showPageLoadingMsg();
+		$.ajax({
+			url: '/counam/coupon/sendCoupon.json'
+			, type: 'post'
+			, data: {
+				title: this.e.find('#title').val()
+				, to: '신민아'
+				, description: this.e.find('#description').val()
+			}
+		}).done(function() {
+			$.mobile.hidePageLoadingMsg();
+			counam.showMsg(this.e, '쿠폰을 성공적으로 전송하였습니다.')
+			
+		}.bind(this)).fail(function() {
+			$.mobile.hidePageLoadingMsg();
+			counam.showMsg(this.e, '쿠폰을 전송하지 못했습니다.')
+		}.bind(this));
+	}
+};
+</script>
+
+
+<!----------------------------------------------
+  couponSelect
+ ------------------------------------------------>
+<div data-role="page" id="couponSelect">
+	<div data-role="header" data-position="fixed">
+		<a href="#newCoupon" data-role="button" data-inline="true">취소</a>
+		<h1>쿠폰 선택</h1>
+		<a href="#newCoupon" data-role="button" data-inline="true">선택</a>
+	</div>
+	<div data-role="content">
+		<div data-role="collapsible-set" data-theme="b" data-content-theme="d">
+			<div data-role="collapsible">
+		        <h2>공용쿠폰</h2>
+				<ul data-role="listview">
+					<li><a href="#newCoupon"><img alt="쿠폰" src="../img/coupon/01.png"><h2>Pick Up권</h2><p>술 취했을 때 사용 강력 추천! 단 본인 차가 없으므로 택시 이용 ㅋㅋㅋ</p></a></li>
+					<li><a href="#newCoupon"><img alt="쿠폰" src="../img/coupon/02.png"><h2>Pick Up권</h2><p>술 취했을 때 사용 강력 추천! 단 본인 차가 없으므로 택시 이용 ㅋㅋㅋ</p></a></li>
+					<li><a href="#newCoupon"><img alt="쿠폰" src="../img/coupon/03.png"><h2>Pick Up권</h2><p>술 취했을 때 사용 강력 추천! 단 본인 차가 없으므로 택시 이용 ㅋㅋㅋ</p></a></li>
+					<li><a href="#newCoupon"><img alt="쿠폰" src="../img/coupon/04.png"><h2>Pick Up권</h2><p>술 취했을 때 사용 강력 추천! 단 본인 차가 없으므로 택시 이용 ㅋㅋㅋ</p></a></li>
+					<li><a href="#newCoupon"><img alt="쿠폰" src="../img/coupon/05.png"><h2>Pick Up권</h2><p>술 취했을 때 사용 강력 추천! 단 본인 차가 없으므로 택시 이용 ㅋㅋㅋ</p></a></li>
+					<li><a href="#newCoupon"><img alt="쿠폰" src="../img/coupon/06.png"><h2>Pick Up권</h2><p>술 취했을 때 사용 강력 추천! 단 본인 차가 없으므로 택시 이용 ㅋㅋㅋ</p></a></li>
+					<li><a href="#newCoupon"><img alt="쿠폰" src="../img/coupon/07.png"><h2>Pick Up권</h2><p>술 취했을 때 사용 강력 추천! 단 본인 차가 없으므로 택시 이용 ㅋㅋㅋ</p></a></li>
+					<li><a href="#newCoupon"><img alt="쿠폰" src="../img/coupon/08.png"><h2>Pick Up권</h2><p>술 취했을 때 사용 강력 추천! 단 본인 차가 없으므로 택시 이용 ㅋㅋㅋ</p></a></li>
+					<li><a href="#newCoupon"><img alt="쿠폰" src="../img/coupon/09.png"><h2>Pick Up권</h2><p>술 취했을 때 사용 강력 추천! 단 본인 차가 없으므로 택시 이용 ㅋㅋㅋ</p></a></li>
+					<li><a href="#newCoupon"><img alt="쿠폰" src="../img/coupon/10.png"><h2>Pick Up권</h2><p>술 취했을 때 사용 강력 추천! 단 본인 차가 없으므로 택시 이용 ㅋㅋㅋ</p></a></li>
+				</ul>
+			</div>
+			<div data-role="collapsible">
+		        <h2>애인전용</h2>
+				<ul data-role="listview">
+					<li><a href="#newCoupon"><img alt="쿠폰" src="../img/coupon/01.png"><h2>Pick Up권</h2><p>술 취했을 때 사용 강력 추천! 단 본인 차가 없으므로 택시 이용 ㅋㅋㅋ</p></a></li>
+					<li><a href="#newCoupon"><img alt="쿠폰" src="../img/coupon/02.png"><h2>Pick Up권</h2><p>술 취했을 때 사용 강력 추천! 단 본인 차가 없으므로 택시 이용 ㅋㅋㅋ</p></a></li>
+					<li><a href="#newCoupon"><img alt="쿠폰" src="../img/coupon/03.png"><h2>Pick Up권</h2><p>술 취했을 때 사용 강력 추천! 단 본인 차가 없으므로 택시 이용 ㅋㅋㅋ</p></a></li>
+					<li><a href="#newCoupon"><img alt="쿠폰" src="../img/coupon/04.png"><h2>Pick Up권</h2><p>술 취했을 때 사용 강력 추천! 단 본인 차가 없으므로 택시 이용 ㅋㅋㅋ</p></a></li>
+					<li><a href="#newCoupon"><img alt="쿠폰" src="../img/coupon/05.png"><h2>Pick Up권</h2><p>술 취했을 때 사용 강력 추천! 단 본인 차가 없으므로 택시 이용 ㅋㅋㅋ</p></a></li>
+					<li><a href="#newCoupon"><img alt="쿠폰" src="../img/coupon/06.png"><h2>Pick Up권</h2><p>술 취했을 때 사용 강력 추천! 단 본인 차가 없으므로 택시 이용 ㅋㅋㅋ</p></a></li>
+					<li><a href="#newCoupon"><img alt="쿠폰" src="../img/coupon/07.png"><h2>Pick Up권</h2><p>술 취했을 때 사용 강력 추천! 단 본인 차가 없으므로 택시 이용 ㅋㅋㅋ</p></a></li>
+					<li><a href="#newCoupon"><img alt="쿠폰" src="../img/coupon/08.png"><h2>Pick Up권</h2><p>술 취했을 때 사용 강력 추천! 단 본인 차가 없으므로 택시 이용 ㅋㅋㅋ</p></a></li>
+					<li><a href="#newCoupon"><img alt="쿠폰" src="../img/coupon/09.png"><h2>Pick Up권</h2><p>술 취했을 때 사용 강력 추천! 단 본인 차가 없으므로 택시 이용 ㅋㅋㅋ</p></a></li>
+					<li><a href="#newCoupon"><img alt="쿠폰" src="../img/coupon/10.png"><h2>Pick Up권</h2><p>술 취했을 때 사용 강력 추천! 단 본인 차가 없으므로 택시 이용 ㅋㅋㅋ</p></a></li>
+				</ul>
+			</div>
+			<div data-role="collapsible">
+		        <h2>부부전용(19금)</h2>
+				<ul data-role="listview">
+					<li><a href="#newCoupon"><img alt="쿠폰" src="../img/coupon/01.png"><h2>Pick Up권</h2><p>술 취했을 때 사용 강력 추천! 단 본인 차가 없으므로 택시 이용 ㅋㅋㅋ</p></a></li>
+					<li><a href="#newCoupon"><img alt="쿠폰" src="../img/coupon/02.png"><h2>Pick Up권</h2><p>술 취했을 때 사용 강력 추천! 단 본인 차가 없으므로 택시 이용 ㅋㅋㅋ</p></a></li>
+					<li><a href="#newCoupon"><img alt="쿠폰" src="../img/coupon/03.png"><h2>Pick Up권</h2><p>술 취했을 때 사용 강력 추천! 단 본인 차가 없으므로 택시 이용 ㅋㅋㅋ</p></a></li>
+					<li><a href="#newCoupon"><img alt="쿠폰" src="../img/coupon/04.png"><h2>Pick Up권</h2><p>술 취했을 때 사용 강력 추천! 단 본인 차가 없으므로 택시 이용 ㅋㅋㅋ</p></a></li>
+					<li><a href="#newCoupon"><img alt="쿠폰" src="../img/coupon/05.png"><h2>Pick Up권</h2><p>술 취했을 때 사용 강력 추천! 단 본인 차가 없으므로 택시 이용 ㅋㅋㅋ</p></a></li>
+					<li><a href="#newCoupon"><img alt="쿠폰" src="../img/coupon/06.png"><h2>Pick Up권</h2><p>술 취했을 때 사용 강력 추천! 단 본인 차가 없으므로 택시 이용 ㅋㅋㅋ</p></a></li>
+					<li><a href="#newCoupon"><img alt="쿠폰" src="../img/coupon/07.png"><h2>Pick Up권</h2><p>술 취했을 때 사용 강력 추천! 단 본인 차가 없으므로 택시 이용 ㅋㅋㅋ</p></a></li>
+					<li><a href="#newCoupon"><img alt="쿠폰" src="../img/coupon/08.png"><h2>Pick Up권</h2><p>술 취했을 때 사용 강력 추천! 단 본인 차가 없으므로 택시 이용 ㅋㅋㅋ</p></a></li>
+					<li><a href="#newCoupon"><img alt="쿠폰" src="../img/coupon/09.png"><h2>Pick Up권</h2><p>술 취했을 때 사용 강력 추천! 단 본인 차가 없으므로 택시 이용 ㅋㅋㅋ</p></a></li>
+					<li><a href="#newCoupon"><img alt="쿠폰" src="../img/coupon/10.png"><h2>Pick Up권</h2><p>술 취했을 때 사용 강력 추천! 단 본인 차가 없으므로 택시 이용 ㅋㅋㅋ</p></a></li>
+				</ul>
+			</div>
 		</div>
 	</div>
 </div>
 
+<!----------------------------------------------
+  inbox
+ ------------------------------------------------>
 <div data-role="page" id="inbox">
-	<div data-role="header">
+	<div data-role="header"  data-position="fixed">
 		<a href="#home" data-role="button" data-inline="true">뒤로가기</a>
 		<h1>받은 쿠폰</h1>
 	</div>
 	<div data-role="content">
 		<ul data-role="listview">
-  			<li><a href="acura.html">식사쿠폰</a></li>
-  			<li><a href="audi.html">커피쿠폰</a></li>
-  			<li><a href="bmw.html">안마쿠폰</a></li>
+			<li><a href="#newCoupon"><img alt="쿠폰" src="../img/coupon/01.png"><h2>From 수지</h2><p>만료일 2013/12/31</p></a></li>
+			<li><a href="#newCoupon"><img alt="쿠폰" src="../img/coupon/02.png"><h2>From 신민아</h2><p>만료일 2013/12/31</p></a></li>
+			<li><a href="#newCoupon"><img alt="쿠폰" src="../img/coupon/03.png"><h2>From 임수정</h2><p>만료일 2013/12/31</p></a></li>
+			<li><a href="#newCoupon"><img alt="쿠폰" src="../img/coupon/04.png"><h2>From 신민아</h2><p>만료일 2013/12/31</p></a></li>
+			<li><a href="#newCoupon"><img alt="쿠폰" src="../img/coupon/05.png"><h2>From 임수정</h2><p>만료일 2013/12/31</p></a></li>
+			<li><a href="#newCoupon"><img alt="쿠폰" src="../img/coupon/06.png"><h2>From 이나영</h2><p>만료일 2013/12/31</p></a></li>
+			<li><a href="#newCoupon"><img alt="쿠폰" src="../img/coupon/07.png"><h2>From 김태희</h2><p>만료일 2013/12/31</p></a></li>
+			<li><a href="#newCoupon"><img alt="쿠폰" src="../img/coupon/08.png"><h2>From 수지</h2><p>만료일 2013/12/31</p></a></li>
+			<li><a href="#newCoupon"><img alt="쿠폰" src="../img/coupon/09.png"><h2>From 김태희</h2><p>만료일 2013/12/31</p></a></li>
+			<li><a href="#newCoupon"><img alt="쿠폰" src="../img/coupon/10.png"><h2>From 신민아</h2><p>만료일 2013/12/31</p></a></li>
 		</ul>
 	</div>
 
@@ -37,23 +261,63 @@
 	</div>
 </div>
 
-<div data-role="page" id="outbox">
-	<div data-role="header">
+<!----------------------------------------------
+  outbox
+ ------------------------------------------------>
+<div data-role="page" id="outbox" style="">
+	<div data-role="header" data-position="fixed">
 		<a href="#home" data-role="button" data-inline="true">뒤로가기</a>
 		<h1>보낸 쿠폰</h1>
+		<a href="javascript:outbox.listCouponFromMe();" data-role="button" data-inline="true">새로고침</a>
 	</div>
 	<div data-role="content">
-		<ul data-role="listview">
-  			<li><a href="acura.html">식사쿠폰</a></li>
-  			<li><a href="audi.html">커피쿠폰</a></li>
-  			<li><a href="bmw.html">안마쿠폰</a></li>
-		</ul>
+		<ul data-role="listview"></ul>
 	</div>
 
 	<div data-role="footer" data-position="fixed">
 		<h4>Page Footer</h4>
 	</div>
 </div>
+<script id="outboxListItemTmpl" type="text/x-jsrender">
+	<li style="position:relative;">
+		<a href="#newCoupon">
+			<img alt="쿠폰" src="../img/coupon/10.png"><h2>To {{:to}}</h2><p>전송일 {{yyyyMMdd:created}}</p>
+		</a>
+		<div class="delButton" style="display:none;position:absolute;top:25px;right:10px; background-color: #AC4; padding:4px;">Del</div>
+	</li>
+</script>
+
+<script type="text/javascript">
+var outbox = {
+	e: $('#outbox')
+	, onShow: function() {
+		this.listCouponFromMe();
+	}
+	, listCouponFromMe: function() {
+		$.mobile.showPageLoadingMsg();
+		$.ajax({
+			url: '/counam/coupon/listCouponFromMe.json'
+			, type: 'post'
+		}).done(function(res) {
+			$.mobile.hidePageLoadingMsg();
+			var lv = this.e.find('[data-role=listview]');
+			lv.empty();
+			for(var i = 0; i < res.length; i++) {
+				var li = $($('#outboxListItemTmpl').render(res[i]));
+				li.on('swipe', function(li, e) {
+					lv.find('.delButton').hide();
+					li.find('.delButton').show();
+				}.bind(this).curry(li));
+				lv.append(li);
+			}
+			lv.listview('refresh');
+		}.bind(this)).fail(function() {
+			$.mobile.hidePageLoadingMsg();
+			counam.showMsg(this.e, '요청을 실패하였습니다. 다시 시도해주세요.')
+		}.bind(this));
+	}
+};
+</script>
 
 </body>
 </html>

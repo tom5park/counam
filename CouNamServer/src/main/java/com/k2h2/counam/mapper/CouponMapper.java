@@ -14,9 +14,11 @@ public interface CouponMapper {
 	 @Select("SELECT * FROM Coupon c WHERE c.to=#{0}")
 	 List<Coupon> listCouponToMe(String userId);
 	 
-	 @Select("SELECT * FROM Coupon c WHERE c.from=#{0}")
+	 @Select("SELECT * FROM Coupon c ORDER BY c.created DESC")
 	 List<Coupon> listCouponFromMe(String userId);
 	 
-	 @Insert("INSERT INTO COUPON (`id`, `type`, `title`, `created`, `status`, `from`, `to`) VALUES (#{id}, #{type}, #{title}, #{created}, #{status}, #{from}, #{to})")
+	 @Insert("INSERT INTO COUPON " +
+	 		"(`id`, `type`, `title`, `created`, `status`, `from`, `to`, `validFrom`, `validTo`, `description`) " +
+	 		"VALUES (#{id}, #{type}, #{title}, #{created}, #{status}, #{from}, #{to}, #{validFrom}, #{validTo}, #{description})")
 	 void createCoupon(Coupon coupon);
 }
