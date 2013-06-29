@@ -1,6 +1,6 @@
-package com.k2h2.counam.auth;
+package com.k2h2.counam.info;
 
-public class GoogleAuthResult {
+public class GoogleAuthInfo {
 	public String _aa; // = "0";
 	public String access_token; // = "ya29.AHES6ZSgeBLb0Q6GT4NvzFJa4_KHTSN8EgKsNHddaFiclvUZCauM7ik";
 	public String authuser; // = "0";

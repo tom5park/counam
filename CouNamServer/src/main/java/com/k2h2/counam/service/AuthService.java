@@ -4,6 +4,7 @@ import java.io.IOException;
 
 import javax.servlet.http.HttpSession;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -16,54 +17,80 @@ import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson.JacksonFactory;
 import com.google.api.services.plus.Plus;
 import com.google.api.services.plus.model.Person;
-import com.k2h2.counam.auth.GoogleAuthResult;
+import com.k2h2.counam.entity.User;
+import com.k2h2.counam.info.AuthInfo;
+import com.k2h2.counam.info.GoogleAuthInfo;
+import com.k2h2.counam.mapper.UserMapper;
 
 @Controller
 @SessionAttributes({"userId", "userId"})
 public class AuthService {
+	
+	@Autowired
+	UserMapper userMapper;
+	
 	@RequestMapping(value="/auth/google/checkAuth.json")
 	@ResponseBody
-	public String checkGoogleAuth(GoogleAuthResult authResult) {
+	public AuthInfo checkGoogleAuth(GoogleAuthInfo authResult, HttpSession session) {
+		AuthInfo res = new AuthInfo();
+		String userId = (String) session.getAttribute("userId");
+		res.setLoggedIn(userId != null ? true: false);
+		res.setSignedUp(userId != null ? true: false);
+		String googleId = getGoogleId(authResult.access_token);
+		if(googleId != null) {
+			res.setGoogleLoggedIn(true);
+			User user = this.userMapper.getUserByAuthId(googleId);
+			res.setSignedUp(user != null ? true: false);
+		} else {
+			res.setGoogleLoggedIn(false);
+		}
+		return res;
+	}
+	
+	private String getGoogleId(String accToken) {
+		String res = null;
 		HttpTransport httpTransport = new NetHttpTransport();
 		JsonFactory jsonFactory = new JacksonFactory();
-		GoogleCredential credential = new GoogleCredential().setAccessToken(authResult.access_token);
-		/*
-	    Plus plus = Plus.builder(new NetHttpTransport(), new JacksonFactory())
-	        .setApplicationName("Google-PlusSample/1.0")
-	        .setHttpRequestInitializer(credential)
-	        .build();
-		
-
-		Credential credential = new Credential.Builder(accessMethod)
-		    .setJsonFactory(jsonFactory)
-		    .setTransport(httpTransport)
-		    .setTokenServerEncodedUrl(tokenServerEncodedUrl)
-		    .setClientAuthentication(clientAuthentication)
-		    .setRequestInitializer(requestInitializer)
-		    .build();
-		*/
+		GoogleCredential credential = new GoogleCredential().setAccessToken(accToken);
 		Plus plus = new Plus(httpTransport, jsonFactory, credential);
 
 		Person profile;
 		try {
 			profile = plus.people().get("me").execute();
-			System.out.println("ID: " + profile.getId());
-			System.out.println("Name: " + profile.getDisplayName());
-			System.out.println("Image URL: " + profile.getImage().getUrl());
-			System.out.println("Profile URL: " + profile.getUrl());
+			res = profile.getId();
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+		return res;
+	}
+	
+	@RequestMapping(value="/auth/updateGoogleAuthInfo.json")
+	@ResponseBody
+	public AuthInfo updateGoogleAuthInfo(GoogleAuthInfo googleAuthInfo, HttpSession session) {
+		// session.setAttribute("googleAuthInfo", googleAuthInfo);
+		session.setAttribute("googleAccToken", googleAuthInfo.access_token);
+		session.setAttribute("googleId", getGoogleId(googleAuthInfo.access_token));
+		return getAuthInfo(session);
+	}
+	
+	public AuthInfo getAuthInfo(HttpSession session) {
+		AuthInfo res = new AuthInfo();
 		
-		/*
-		GoogleCredential c = new GoogleCredential.Builder()
-	      .setJsonFactory(JSON_FACTORY).setTransport(TRANSPORT)
-	      .setClientSecrets(CLIENT_ID, CLIENT_SECRET).build(); 
-		System.out.println(String.format("__[X78]__: %s", authResult.access_token));
-		System.out.println(String.format("__[X78]__: %s", authResult._aa));
-		*/
-		return "";
+		String userId = (String) session.getAttribute("userId");
+		String googleId = (String) session.getAttribute("googleId");
+		
+		res.setLoggedIn(userId != null ? true: false);
+		res.setSignedUp(userId != null ? true: false);
+		res.setGoogleLoggedIn(googleId != null ? true: false);
+		if(googleId != null) {
+			User user = this.userMapper.getUserByAuthId(googleId);
+			res.setSignedUp(user != null ? true: false);
+			if(user != null) {
+				session.setAttribute("userId", user.getId());
+			} 
+			res.setSignedUp(user != null ? true: false);
+		}
+		return res;
 	}
 	
 	@RequestMapping(value="/auth/login.json")

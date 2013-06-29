@@ -29,10 +29,11 @@ function signinCallback(authResult) {
 		
 		
 		$.ajax({
-			url: '/counam/auth/google/checkAuth.json'
+			url: '/counam/auth/updateGoogleAuthInfo.json'
 			, type: 'post'
 			, data: authResult
-		}).done(function(res) {
+		}).done(function(authInfo) {
+			debugger;
 		}.bind(this)).fail(function() {
 		}.bind(this));
 		if($.mobile.activePage.is("#login") || $.mobile.activePage.is("#start")) {
