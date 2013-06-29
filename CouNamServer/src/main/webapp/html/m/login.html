@@ -1,0 +1,113 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>쿠폰남발</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="/counam/lib/jqm/jquery.mobile-1.3.1.min.css" />
+<link rel="stylesheet" href="/counam/lib/jqm/jquery.mobile.theme-1.3.1.min.css" />
+<script src="/counam/js/jquery-2.0.2.min.js"></script>
+<script src="/counam/lib/jqm/jquery.mobile-1.3.1.min.js"></script>
+<script src="/counam/js/common.js"></script>
+
+<script type="text/javascript">
+(function() {
+	var po = document.createElement('script'); po.type = 'text/javascript'; po.async = true;
+	po.src = 'https://apis.google.com/js/client:plusone.js';
+	var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(po, s);
+})();
+
+function signinCallback(authResult) {
+	if (authResult['access_token']) {
+		gapi.auth.setToken(authResult);
+		gapi.client.load('oauth2', 'v2', function() {
+			var request = gapi.client.oauth2.userinfo.get();
+			request.execute(function(obj) {
+				console.info(obj.id);
+			});
+		});
+		
+		
+		$.ajax({
+			url: '/counam/auth/google/checkAuth.json'
+			, type: 'post'
+			, data: authResult
+		}).done(function(res) {
+		}.bind(this)).fail(function() {
+		}.bind(this));
+		if($.mobile.activePage.is("#login") || $.mobile.activePage.is("#start")) {
+			$.mobile.changePage("#home");
+		}
+	} else if (authResult['error']) {
+		$.mobile.changePage("#login", {changeHash: false});
+	}
+}
+</script>
+
+</head>
+<body>
+
+<!----------------------------------------------
+  login
+ ------------------------------------------------>
+<div data-role="page" id="login">
+	<div data-role="content">
+		<input type="text" id="id" name="id" value="사용자 이름" />
+		<input type="password" id="pw" name="pw" value="비밀번호" />
+		<a href="javascript:login.login();" data-role="button" data-inline="true">로그인</a>
+		<div>
+			<span id="signinButton">
+				<span
+					class="g-signin"
+					data-callback="signinCallback"
+					data-clientid="914307840382.apps.googleusercontent.com"
+					data-cookiepolicy="single_host_origin"
+					data-requestvisibleactions="http://schemas.google.com/AddActivity"
+					data-scope="https://www.googleapis.com/auth/plus.login">
+				</span>
+			</span>
+		</div>
+	</div>
+</div>
+
+<script type="text/javascript">
+var login = {
+	login: function() {
+		var page = $('#login');
+		
+		$.ajax({
+			url: '/counam/auth/login.json'
+			, type: 'post'
+			, data: {
+				id: page.find('#id').val()
+				, password: page.find('#id').val()
+			}
+		}).done(function(res) {
+		}.bind(this)).fail(function() {
+		}.bind(this));
+	}	
+};
+</script>
+
+<!----------------------------------------------
+  register
+ ------------------------------------------------>
+<div data-role="page" id="register">
+	<div data-role="content">
+		<p>
+			쿠폰 남발을 사용하기 위해서는 아래 약관에 동의해야합니다. 
+		</p>
+		<h2>약관 동의 및 가입</h2>
+		<p>
+			당신의 정보를 내가 사용할 수 있습니다. 
+		</p>
+		<label><input type="checkbox" name="checkbox-0 ">약관에 동의합니다.</label>
+		<div data-role="controlgroup" data-type="horizontal" style="text-align: center;">
+			<a href="#" data-role="button">나가기</a>
+			<a href="#" data-role="button">가입하기</a>
+		</div>
+	</div>
+</div>
+
+</body>
+</html>

@@ -8,7 +8,6 @@ import com.google.api.client.googleapis.auth.oauth2.GoogleIdToken;
 import com.google.api.client.googleapis.auth.oauth2.GoogleIdTokenVerifier;
 import com.google.api.client.http.javanet.NetHttpTransport;
 import com.google.api.client.json.JsonFactory;
-import com.google.api.client.json.gson.GsonFactory;
 
 /**
  * Command-line sample for the Google OAuth2 API described at <a
@@ -21,20 +20,21 @@ public class GoogleUtil {
 
 	private final List mClientIDs;
     private final String mAudience;
-    private final GoogleIdTokenVerifier mVerifier;
-    private final JsonFactory mJFactory;
+//    private final GoogleIdTokenVerifier mVerifier;
+//    private final JsonFactory mJFactory;
     private String mProblem = "Verification failed. (Time-out?)";
 
     public GoogleUtil(String[] clientIDs, String audience) {
         mClientIDs = Arrays.asList(clientIDs);
         mAudience = audience;
         NetHttpTransport transport = new NetHttpTransport();
-        mJFactory = new GsonFactory();
-        mVerifier = new GoogleIdTokenVerifier(transport, mJFactory);
+//        mJFactory = new GsonFactory();
+//        mVerifier = new GoogleIdTokenVerifier(transport, mJFactory);
     }
 
     public GoogleIdToken.Payload check(String tokenString) {
         GoogleIdToken.Payload payload = null;
+        /*
         try {
             GoogleIdToken token = GoogleIdToken.parse(mJFactory, tokenString);
             System.out.println(String.format("__[Z83]__: %s", token));
@@ -62,6 +62,7 @@ public class GoogleUtil {
         } catch (IOException e) {
             mProblem = "Network problem: " + e.getLocalizedMessage();
         }
+    	 */
         return payload;
     }
 
@@ -71,7 +72,7 @@ public class GoogleUtil {
     
     public static void main(String[] args) {
     	GoogleUtil g = new GoogleUtil(new String[] {"914307840382.apps.googleusercontent.com"}, "914307840382.apps.googleusercontent.com");
-    	GoogleIdToken.Payload p = g.check("eyJhbGciOiJSUzI1NiIsImtpZCI6IjU4MDk4NTc3NDM1N2U0ZWVhYjRlYzliOWI5MTNjNjBjNzZmYmFhNzYifQ.eyJpc3MiOiJhY2NvdW50cy5nb29nbGUuY29tIiwiYXpwIjoiOTE0MzA3ODQwMzgyLmFwcHMuZ29vZ2xldXNlcmNvbnRlbnQuY29tIiwiYXVkIjoiOTE0MzA3ODQwMzgyLmFwcHMuZ29vZ2xldXNlcmNvbnRlbnQuY29tIiwic3ViIjoiMTEyMTQ2NjEzNTIzMTIwODIzMDA3IiwiYXRfaGFzaCI6Im1qUEg4Q2IxQ1k3eWszS1d3MTB6RHciLCJjX2hhc2giOiJxLUEwTGwtM3FfZmpsMUN3c0Q5UFdnIiwiaWF0IjoxMzcwODI5NDc1LCJleHAiOjEzNzA4MzMzNzV9.hEN6iH6YurapM3ZsC-3GNSkSfLsIMppF_2CDPePp1LK35Rzx5y1vmJnqUGbuAL7pPKfb70ajVN1voahEFnuxIRHaoMDFebLkSnQ8y_gW0DwjsDVw--mx0m4zs5-XMioT_MknVCdISuZbSwHjJgrT1hqNEL1JCbBUgWZbi7cn1AY");
+    	GoogleIdToken.Payload p = g.check("eyJhbGciOiJSUzI1NiIsImtpZCI6Ijc4MmIyOWUwMGYwN2U1YjEzYmU4ZGUxMDEyODlmMTcyMGY2YWU0NTEifQ.eyJpc3MiOiJhY2NvdW50cy5nb29nbGUuY29tIiwic3ViIjoiMTEyMTQ2NjEzNTIzMTIwODIzMDA3IiwiYXpwIjoiOTE0MzA3ODQwMzgyLmFwcHMuZ29vZ2xldXNlcmNvbnRlbnQuY29tIiwiYXRfaGFzaCI6IlZ2N1pkeXVrU2JPa3d5aUY1V0R6Q1EiLCJjX2hhc2giOiJCRUFXTExrRDlRVzJuX2RvbjdSNndBIiwiYXVkIjoiOTE0MzA3ODQwMzgyLmFwcHMuZ29vZ2xldXNlcmNvbnRlbnQuY29tIiwiaWF0IjoxMzcyNDg1ODY0LCJleHAiOjEzNzI0ODk3NjR9.tUUJWCqo2PD0UbBcbjBy4o86csJjDMVsoL_XK2jse--7RKk96gGf4Glf1DuFflkYoZy66tGsLt6mKfLqQA7Pip9Tq_IK_wDR4td3m7fOhs4dSGO1-wAfdWYREdOUXjgXO9RWKOSgG87WpwxY-rlcvt4J-0ekg5IPS1Df4UtEcKA");
     	System.out.println(String.format("__[W62]__: %s", g.problem()));
     	if(p != null)
     	System.out.println(String.format("__[Z61]__: %s", p.getEmail()));
