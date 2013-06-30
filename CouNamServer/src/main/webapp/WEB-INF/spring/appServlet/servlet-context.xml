@@ -32,4 +32,6 @@
 		<beans:property name="basePackage" value="com.k2h2.counam.manager" />
     </beans:bean>
 	
+	<beans:bean class="com.k2h2.counam.exception.JsonExceptionResolver">
+	</beans:bean>
 </beans:beans>

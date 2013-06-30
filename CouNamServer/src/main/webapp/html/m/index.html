@@ -64,14 +64,17 @@ var counam = {
 	</div>
 </div>
 
-<div data-role="page" id="start">
-</div>
 
 
 <!----------------------------------------------
   home 
  ------------------------------------------------>
 <div data-role="page" id="home">
+	<div data-role="header" data-position="fixed">
+		<a href="#home" data-role="button" data-inline="true">취소</a>
+		<h1>쿠폰 발행</h1>
+		<a href="#setting" data-role="button" data-inline="true" data-icon="gear" data-iconpos="notext">설정</a>
+	</div>
 	<div data-role="content">
 		<div style="text-align: center;"><h1>쿠폰남발</h1></div>
 		
@@ -289,5 +292,40 @@ var outbox = {
 };
 </script>
 
+
+<!----------------------------------------------
+  setting
+ ------------------------------------------------>
+<div data-role="page" id="setting">
+	<div data-role="header"  data-position="fixed">
+		<a href="#home" data-role="button" data-inline="true">뒤로가기</a>
+		<h1>설정</h1>
+	</div>
+	<div data-role="content">
+		<div data-role="controlgroup">
+			<a href="index.html" data-role="button">내 정보</a>
+			<a href="javascript:setting.logout();" data-role="button">로그아웃</a>
+			<a href="index.html" data-role="button">탈퇴</a>
+		</div>
+	</div>
+
+	<div data-role="footer" data-position="fixed">
+		<h4>Page Footer</h4>
+	</div>
+</div>
+<script type="text/javascript">
+var setting = {
+	e: $('#setting')
+	, logout: function() {
+		$.ajax({
+			url: '/counam/auth/logout.json'
+			, type: 'post'
+		}).done(function(res) {
+			$.mobile.changePage('login.html');
+		});
+	}
+	
+};
+</script>
 </body>
 </html>

@@ -11,6 +11,10 @@
 <script src="/counam/js/common.js"></script>
 
 <script type="text/javascript">
+
+var counam = {
+};
+
 (function() {
 	var po = document.createElement('script'); po.type = 'text/javascript'; po.async = true;
 	po.src = 'https://apis.google.com/js/client:plusone.js';
@@ -19,6 +23,7 @@
 
 function signinCallback(authResult) {
 	if (authResult['access_token']) {
+		counam.googleAuthInfo = authResult;
 		gapi.auth.setToken(authResult);
 		gapi.client.load('oauth2', 'v2', function() {
 			var request = gapi.client.oauth2.userinfo.get();
@@ -27,22 +32,25 @@ function signinCallback(authResult) {
 			});
 		});
 		
-		
 		$.ajax({
 			url: '/counam/auth/updateGoogleAuthInfo.json'
 			, type: 'post'
 			, data: authResult
 		}).done(function(authInfo) {
-			debugger;
+			if(authInfo.isLoggedIn) {
+				$.mobile.changePage('index.html#start');
+			} else if(!authInfo.isSignedUp) {
+				$.mobile.changePage('#signUp')
+			}
 		}.bind(this)).fail(function() {
+			$.mobile.changePage("#login", {changeHash: false});
 		}.bind(this));
-		if($.mobile.activePage.is("#login") || $.mobile.activePage.is("#start")) {
-			$.mobile.changePage("#home");
-		}
 	} else if (authResult['error']) {
 		$.mobile.changePage("#login", {changeHash: false});
 	}
 }
+
+
 </script>
 
 </head>
@@ -91,9 +99,9 @@ var login = {
 </script>
 
 <!----------------------------------------------
-  register
+  signUp
  ------------------------------------------------>
-<div data-role="page" id="register">
+<div data-role="page" id="signUp">
 	<div data-role="content">
 		<p>
 			쿠폰 남발을 사용하기 위해서는 아래 약관에 동의해야합니다. 
@@ -105,10 +113,28 @@ var login = {
 		<label><input type="checkbox" name="checkbox-0 ">약관에 동의합니다.</label>
 		<div data-role="controlgroup" data-type="horizontal" style="text-align: center;">
 			<a href="#" data-role="button">나가기</a>
-			<a href="#" data-role="button">가입하기</a>
+			<a href="javascript:signUp.signUp();" data-role="button">가입하기</a>
 		</div>
 	</div>
 </div>
+
+<script type="text/javascript">
+var signUp = {
+	signUp: function() {
+		var page = $('#signUp');
+		
+		$.ajax({
+			url: '/counam/auth/signUpWithGoogleAccount.json'
+			, type: 'post'
+			, data: {
+				accToken: counam.googleAuthInfo.access_token
+			}
+		}).done(function(res) {
+		}.bind(this)).fail(function() {
+		}.bind(this));
+	}	
+};
+</script>
 
 </body>
 </html>

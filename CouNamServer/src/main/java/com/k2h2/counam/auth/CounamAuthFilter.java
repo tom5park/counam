@@ -30,6 +30,7 @@ public class CounamAuthFilter implements Filter {
 		HttpServletResponse res = (HttpServletResponse) response;
 		HttpSession session = req.getSession();
 		String userId = (String)session.getAttribute("userId");
+		System.out.println(String.format("__[L73]__: %s", userId));
 		if(userId == null) {
 			request.getRequestDispatcher("/m/login.html").forward(request, response);
 		} else {

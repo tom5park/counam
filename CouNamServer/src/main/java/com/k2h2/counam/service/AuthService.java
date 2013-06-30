@@ -1,6 +1,7 @@
 package com.k2h2.counam.service;
 
 import java.io.IOException;
+import java.util.UUID;
 
 import javax.servlet.http.HttpSession;
 
@@ -17,7 +18,9 @@ import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson.JacksonFactory;
 import com.google.api.services.plus.Plus;
 import com.google.api.services.plus.model.Person;
+import com.k2h2.counam.constant.AuthType;
 import com.k2h2.counam.entity.User;
+import com.k2h2.counam.exception.CNException;
 import com.k2h2.counam.info.AuthInfo;
 import com.k2h2.counam.info.GoogleAuthInfo;
 import com.k2h2.counam.mapper.UserMapper;
@@ -39,7 +42,7 @@ public class AuthService {
 		String googleId = getGoogleId(authResult.access_token);
 		if(googleId != null) {
 			res.setGoogleLoggedIn(true);
-			User user = this.userMapper.getUserByAuthId(googleId);
+			User user = this.userMapper.getUserByAuthId(AuthType.GOOGLE, googleId);
 			res.setSignedUp(user != null ? true: false);
 		} else {
 			res.setGoogleLoggedIn(false);
@@ -47,21 +50,22 @@ public class AuthService {
 		return res;
 	}
 	
-	private String getGoogleId(String accToken) {
-		String res = null;
+	private Person getGoogleProfile(String accToken) {
+		Person res = null;
 		HttpTransport httpTransport = new NetHttpTransport();
 		JsonFactory jsonFactory = new JacksonFactory();
 		GoogleCredential credential = new GoogleCredential().setAccessToken(accToken);
 		Plus plus = new Plus(httpTransport, jsonFactory, credential);
-
-		Person profile;
 		try {
-			profile = plus.people().get("me").execute();
-			res = profile.getId();
+			res = plus.people().get("me").execute();
 		} catch (IOException e) {
-			e.printStackTrace();
+			throw new CNException("Can't get google profile.", e);
 		}
 		return res;
+	}
+	
+	private String getGoogleId(String accToken) {
+		return getGoogleProfile(accToken).getId();
 	}
 	
 	@RequestMapping(value="/auth/updateGoogleAuthInfo.json")
@@ -73,9 +77,10 @@ public class AuthService {
 		return getAuthInfo(session);
 	}
 	
+	@RequestMapping(value="/auth/getAuthInfo.json")
+	@ResponseBody
 	public AuthInfo getAuthInfo(HttpSession session) {
 		AuthInfo res = new AuthInfo();
-		
 		String userId = (String) session.getAttribute("userId");
 		String googleId = (String) session.getAttribute("googleId");
 		
@@ -83,13 +88,35 @@ public class AuthService {
 		res.setSignedUp(userId != null ? true: false);
 		res.setGoogleLoggedIn(googleId != null ? true: false);
 		if(googleId != null) {
-			User user = this.userMapper.getUserByAuthId(googleId);
+			User user = this.userMapper.getUserByAuthId(AuthType.GOOGLE, googleId);
 			res.setSignedUp(user != null ? true: false);
 			if(user != null) {
 				session.setAttribute("userId", user.getId());
 			} 
 			res.setSignedUp(user != null ? true: false);
 		}
+		return res;
+	}
+	
+	@RequestMapping(value="/auth/signUpWithGoogleAccount.json")
+	@ResponseBody
+	public String signUpWithGoogleAccount(String accToken, HttpSession session) {
+		String res = UUID.randomUUID().toString();
+		Person p = getGoogleProfile(accToken);
+		
+		if(this.userMapper.getUserByAuthId(AuthType.GOOGLE, p.getId()) != null) {
+			throw new CNException("The account is already used by other user.");
+		}
+		User user = new User();
+		user.setId(res);
+		user.setAccToken(accToken);
+		user.setAgreement(true);
+		user.setAuthId(p.getId());
+		user.setAuthType(AuthType.GOOGLE);
+		user.setName(p.getDisplayName());
+		user.setStatus("ACTIVE");
+		this.userMapper.createUser(user);
+		session.setAttribute("userId", res);
 		return res;
 	}
 	
@@ -101,5 +128,11 @@ public class AuthService {
 		System.out.println(String.format("__[T18]__: %s", userId));
 		session.setAttribute("userId", id);
 		return res;
+	}
+	
+	@RequestMapping(value="/auth/logout.json")
+	@ResponseBody
+	public void logout(HttpSession session) {
+		session.removeAttribute("userId");
 	}
 }
