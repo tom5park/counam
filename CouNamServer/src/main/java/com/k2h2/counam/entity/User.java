@@ -1,6 +1,7 @@
 package com.k2h2.counam.entity;
 
 import com.k2h2.counam.constant.AuthType;
+import com.k2h2.counam.constant.UserStatus;
 
 
 public class User {
@@ -9,7 +10,7 @@ public class User {
 	
 	String name;
 	
-	String status;
+	UserStatus status;
 	
 	AuthType authType;
 	
@@ -18,6 +19,10 @@ public class User {
 	String authId;
 	
 	boolean agreement;
+	
+	String eMail;
+	
+	String mobile;
 	
 	public String getId() {
 		return id;
@@ -35,11 +40,11 @@ public class User {
 		this.name = name;
 	}
 	
-	public String getStatus() {
+	public UserStatus getStatus() {
 		return status;
 	}
 	
-	public void setStatus(String status) {
+	public void setStatus(UserStatus status) {
 		this.status = status;
 	}
 	
@@ -72,5 +77,21 @@ public class User {
 	
 	public void setAgreement(boolean agreement) {
 		this.agreement = agreement;
+	}
+
+	public String geteMail() {
+		return eMail;
+	}
+
+	public void seteMail(String eMail) {
+		this.eMail = eMail;
+	}
+
+	public String getMobile() {
+		return mobile;
+	}
+
+	public void setMobile(String mobile) {
+		this.mobile = mobile;
 	}
 }

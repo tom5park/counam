@@ -9,6 +9,7 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import com.k2h2.counam.constant.AuthType;
+import com.k2h2.counam.constant.UserStatus;
 import com.k2h2.counam.entity.User;
 import com.k2h2.counam.mapper.UserMapper;
 
@@ -38,7 +39,7 @@ public class UserTest {
 		user.setAgreement(true);
 		user.setAuthId("a09323");
 		user.setAuthType(AuthType.GOOGLE);
-		user.setStatus("READY");
+		user.setStatus(UserStatus.ACTIVE);
 		this.um.createUser(user);
 	}
 

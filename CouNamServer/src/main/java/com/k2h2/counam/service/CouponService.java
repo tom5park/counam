@@ -12,8 +12,11 @@ import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.k2h2.counam.constant.UserStatus;
 import com.k2h2.counam.entity.Coupon;
+import com.k2h2.counam.entity.User;
 import com.k2h2.counam.mapper.CouponMapper;
+import com.k2h2.counam.mapper.UserMapper;
 
 @Controller
 //@SessionAttributes({"currentUserID", "currentUserAccessToken"})
@@ -21,6 +24,9 @@ public class CouponService {
 	
 	@Autowired
 	CouponMapper couponMapper;
+	
+	@Autowired
+	UserMapper userMapper;
 	
 	@InitBinder
 	public void initBinder(WebDataBinder binder) {
@@ -49,6 +55,16 @@ public class CouponService {
 	@RequestMapping(value="/coupon/sendCoupon.json")
 	@ResponseBody
 	public void sendCoupon(Coupon coupon) {
+		this.couponMapper.createCoupon(coupon);
+	}
+	
+	@RequestMapping(value="/coupon/sendSMSCoupon.json")
+	@ResponseBody
+	public void sendSMSCoupon(Coupon coupon) {
+		User user = new User();
+		user.setStatus(UserStatus.TEMP);
+		this.userMapper.createUser(user);
+		coupon.setTo(user.getId());
 		this.couponMapper.createCoupon(coupon);
 	}
 }

@@ -4,65 +4,67 @@ public class AuthInfo {
 	/**
 	 * 쿠폰남발에 가입되어 있는 상태인가?
 	 */
-	private boolean isSignedUp = false;
+	private boolean signedUp = false;
 	
 	/**
 	 * 쿠폰남발에 로그인되어 있는 상태인가?
 	 */
-	private boolean isLoggedIn = false;
+	private boolean loggedIn = false;
 	
 	/**
 	 * 구글에 로그인되어 있는 상태인가?
 	 */
-	private boolean isGoogleLoggedIn = false;
+	private boolean loggedInGoogle = false;
 	
 	/**
 	 * 페이스북에 로그인되어 있는 상태인가? 
 	 */
-	private boolean isFacebookLoggedIn = false;
+	private boolean loggedInFacebook = false;
 	
 	/**
 	 * 카카오톡에 로그인되어 있는 상태인가? 
 	 */
-	private boolean isKakaoLoggedIn = false;
+	private boolean loggedInKakao = false;
 
 	public boolean isSignedUp() {
-		return isSignedUp;
+		return signedUp;
 	}
 
-	public void setSignedUp(boolean isSignedUp) {
-		this.isSignedUp = isSignedUp;
+	public void setSignedUp(boolean signedUp) {
+		this.signedUp = signedUp;
 	}
 
 	public boolean isLoggedIn() {
-		return isLoggedIn;
+		return loggedIn;
 	}
 
-	public void setLoggedIn(boolean isLoggedIn) {
-		this.isLoggedIn = isLoggedIn;
+	public void setLoggedIn(boolean loggedIn) {
+		this.loggedIn = loggedIn;
 	}
 
-	public boolean isGoogleLoggedIn() {
-		return isGoogleLoggedIn;
+	public boolean isLoggedInGoogle() {
+		return loggedInGoogle;
 	}
 
-	public void setGoogleLoggedIn(boolean isGoogleLoggedIn) {
-		this.isGoogleLoggedIn = isGoogleLoggedIn;
+	public void setLoggedInGoogle(boolean loggedInGoogle) {
+		this.loggedInGoogle = loggedInGoogle;
 	}
 
-	public boolean isFacebookLoggedIn() {
-		return isFacebookLoggedIn;
+	public boolean isLoggedInFacebook() {
+		return loggedInFacebook;
 	}
 
-	public void setFacebookLoggedIn(boolean isFacebookLoggedIn) {
-		this.isFacebookLoggedIn = isFacebookLoggedIn;
+	public void setLoggedInFacebook(boolean loggedInFacebook) {
+		this.loggedInFacebook = loggedInFacebook;
 	}
 
-	public boolean isKakaoLoggedIn() {
-		return isKakaoLoggedIn;
+	public boolean isLoggedInKakao() {
+		return loggedInKakao;
 	}
 
-	public void setKakaoLoggedIn(boolean isKakaoLoggedIn) {
-		this.isKakaoLoggedIn = isKakaoLoggedIn;
+	public void setLoggedInKakao(boolean loggedInKakao) {
+		this.loggedInKakao = loggedInKakao;
 	}
+
+	
 }

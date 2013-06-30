@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans:beans xmlns="http://www.springframework.org/schema/security"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:beans="http://www.springframework.org/schema/beans"
+	xmlns:oauth="http://www.springframework.org/schema/security/oauth2"
+	xsi:schemaLocation="http://www.springframework.org/schema/security http://www.springframework.org/schema/security/spring-security-3.1.xsd 
+		http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+		http://www.springframework.org/schema/security/oauth2 http://www.springframework.org/schema/security/spring-security-oauth2-1.0.xsd">
+		
+	<http auto-config="true"  
+			authentication-manager-ref="counamAuthenticationManager" 
+			access-decision-manager-ref="counamAccessDecisionManager">
+		<form-login login-page="/m/login.html" />
+		<intercept-url pattern="/m/login.html" access="ROLE_ANONYMOUS" />
+		<intercept-url pattern="/**/*.css" access="ROLE_ANONYMOUS" />
+		<intercept-url pattern="/**/*.js" access="ROLE_ANONYMOUS" />
+		<intercept-url pattern="/counam/img/**/*" access="ROLE_ANONYMOUS" />
+		<intercept-url pattern="/counam/lib/**/*" access="ROLE_ANONYMOUS" />
+		<intercept-url pattern="/**" access="ROLE_USER" />
+	</http>
+	
+	<beans:bean id="counamAuthenticationManager" class="com.k2h2.counam.auth.AM">
+    </beans:bean>
+    
+    <beans:bean id="counamAccessDecisionManager" class="com.k2h2.counam.auth.ADM">
+    </beans:bean>
+	
+	
+</beans:beans>
