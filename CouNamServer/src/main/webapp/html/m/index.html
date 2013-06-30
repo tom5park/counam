@@ -305,7 +305,7 @@ var outbox = {
 		<div data-role="controlgroup">
 			<a href="index.html" data-role="button">내 정보</a>
 			<a href="javascript:setting.logout();" data-role="button">로그아웃</a>
-			<a href="index.html" data-role="button">탈퇴</a>
+			<a href="javascript:setting.deleteAccount();" data-role="button">탈퇴</a>
 		</div>
 	</div>
 
@@ -324,7 +324,14 @@ var setting = {
 			$.mobile.changePage('login.html');
 		});
 	}
-	
+	, deleteAccount: function() {
+		$.ajax({
+			url: '/counam/auth/deleteAccount.json'
+			, type: 'post'
+		}).done(function(res) {
+			$.mobile.changePage('login.html');
+		});
+	}
 };
 </script>
 </body>

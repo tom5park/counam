@@ -37,9 +37,9 @@ function signinCallback(authResult) {
 			, type: 'post'
 			, data: authResult
 		}).done(function(authInfo) {
-			if(authInfo.isLoggedIn) {
+			if(authInfo.loggedIn) {
 				$.mobile.changePage('index.html#start');
-			} else if(!authInfo.isSignedUp) {
+			} else if(!authInfo.signedUp) {
 				$.mobile.changePage('#signUp')
 			}
 		}.bind(this)).fail(function() {

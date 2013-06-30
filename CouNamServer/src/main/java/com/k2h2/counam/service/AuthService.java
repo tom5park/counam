@@ -19,6 +19,7 @@ import com.google.api.client.json.jackson.JacksonFactory;
 import com.google.api.services.plus.Plus;
 import com.google.api.services.plus.model.Person;
 import com.k2h2.counam.constant.AuthType;
+import com.k2h2.counam.constant.UserStatus;
 import com.k2h2.counam.entity.User;
 import com.k2h2.counam.exception.CNException;
 import com.k2h2.counam.info.AuthInfo;
@@ -41,11 +42,11 @@ public class AuthService {
 		res.setSignedUp(userId != null ? true: false);
 		String googleId = getGoogleId(authResult.access_token);
 		if(googleId != null) {
-			res.setGoogleLoggedIn(true);
+			res.setLoggedInGoogle(true);
 			User user = this.userMapper.getUserByAuthId(AuthType.GOOGLE, googleId);
 			res.setSignedUp(user != null ? true: false);
 		} else {
-			res.setGoogleLoggedIn(false);
+			res.setLoggedInGoogle(false);
 		}
 		return res;
 	}
@@ -86,7 +87,7 @@ public class AuthService {
 		
 		res.setLoggedIn(userId != null ? true: false);
 		res.setSignedUp(userId != null ? true: false);
-		res.setGoogleLoggedIn(googleId != null ? true: false);
+		res.setLoggedInGoogle(googleId != null ? true: false);
 		if(googleId != null) {
 			User user = this.userMapper.getUserByAuthId(AuthType.GOOGLE, googleId);
 			res.setSignedUp(user != null ? true: false);
@@ -114,7 +115,7 @@ public class AuthService {
 		user.setAuthId(p.getId());
 		user.setAuthType(AuthType.GOOGLE);
 		user.setName(p.getDisplayName());
-		user.setStatus("ACTIVE");
+		user.setStatus(UserStatus.ACTIVE);
 		this.userMapper.createUser(user);
 		session.setAttribute("userId", res);
 		return res;
@@ -133,6 +134,21 @@ public class AuthService {
 	@RequestMapping(value="/auth/logout.json")
 	@ResponseBody
 	public void logout(HttpSession session) {
+		session.removeAttribute("userId");
+	}
+	
+	@RequestMapping(value="/auth/deleteAccount.json")
+	@ResponseBody
+	public void deleteAccount(HttpSession session) {
+		String userId = (String) session.getAttribute("userId");
+		User user = new User();
+		user.setId(userId);
+		user.setName("탈퇴한 사용자");
+		user.setStatus(UserStatus.DELETED);
+		user.setAccToken("");
+		user.setAuthId("");
+		user.setAuthType(AuthType.UNKNOWN);
+		this.userMapper.updateUser(user);
 		session.removeAttribute("userId");
 	}
 }

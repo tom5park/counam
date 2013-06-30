@@ -1,6 +1,7 @@
 package com.k2h2.counam.entity;
 
 import com.k2h2.counam.constant.AuthType;
+import com.k2h2.counam.constant.UserStatus;
 
 
 public class User {
@@ -9,7 +10,7 @@ public class User {
 	
 	String name;
 	
-	String status;
+	UserStatus status;
 	
 	AuthType authType;
 	
@@ -35,11 +36,11 @@ public class User {
 		this.name = name;
 	}
 	
-	public String getStatus() {
+	public UserStatus getStatus() {
 		return status;
 	}
 	
-	public void setStatus(String status) {
+	public void setStatus(UserStatus status) {
 		this.status = status;
 	}
 	
