@@ -18,7 +18,6 @@ var counam = {
 
 $(function() {
 	$('[data-role=page]').on('pageshow', function(a, b,  c) {
-		debugger;
 		var page = eval(this.id);
 		if(!page) {
 			return;
@@ -33,8 +32,34 @@ $(function() {
 	
 }); 
 
-function onCheckGoogleAuth(authResult) {
-	start.onCheckGoogleAuth(authResult);
+
+function signinCallback(authResult) {
+	if (authResult['access_token']) {
+		counam.googleAuthInfo = authResult;
+		gapi.auth.setToken(authResult);
+		gapi.client.load('oauth2', 'v2', function() {
+			var request = gapi.client.oauth2.userinfo.get();
+			request.execute(function(obj) {
+				console.info(obj.id);
+			});
+		});
+		
+		$.ajax({
+			url: '/counam/auth/updateGoogleAuthInfo.json'
+			, type: 'post'
+			, data: authResult
+		}).done(function(authInfo) {
+			if(authInfo.loggedIn) {
+				$.mobile.changePage('index.html#start');
+			} else if(!authInfo.signedUp) {
+				$.mobile.changePage('#signUp')
+			}
+		}.bind(this)).fail(function() {
+			$.mobile.changePage("#login", {changeHash: false});
+		}.bind(this));
+	} else if (authResult['error']) {
+		$.mobile.changePage("#login", {changeHash: false});
+	}
 }
 
 </script>

@@ -98,6 +98,14 @@ public class AuthService {
 		res.setLoggedIn(userId != null ? true: false);
 		res.setSignedUp(userId != null ? true: false);
 		res.setLoggedInGoogle(googleId != null ? true: false);
+		if(googleId != null) {
+			User user = this.userMapper.getUserByAuthId(AuthType.GOOGLE, googleId);
+			res.setSignedUp(user != null ? true: false);
+			if(user != null) {
+				session.setAttribute("userId", user.getId());
+			} 
+			res.setSignedUp(user != null ? true: false);
+		}
 		return res;
 	}
 	
@@ -151,6 +159,21 @@ public class AuthService {
 	public void logout(HttpSession session) {
 		SecurityContextHolder.clearContext();
 		//session.removeAttribute("userId");
+	}
+	
+	@RequestMapping(value="/auth/deleteAccount.json")
+	@ResponseBody
+	public void deleteAccount(HttpSession session) {
+		String userId = (String) session.getAttribute("userId");
+		User user = new User();
+		user.setId(userId);
+		user.setName("탈퇴한 사용자");
+		user.setStatus(UserStatus.DELETED);
+		user.setAccToken("");
+		user.setAuthId("");
+		user.setAuthType(AuthType.UNKNOWN);
+		this.userMapper.updateUser(user);
+		session.removeAttribute("userId");
 	}
 	
 	@RequestMapping(value="/auth/deleteAccount.json")

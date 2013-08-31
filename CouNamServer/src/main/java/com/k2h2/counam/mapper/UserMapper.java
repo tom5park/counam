@@ -17,7 +17,7 @@ public interface UserMapper {
 
 	@Select("SELECT * FROM user u WHERE u.authType=#{0} AND u.authId=#{1} AND u.status='ACTIVE'")
 	User getUserByAuthId(AuthType authType, String authId);
-	
+
 	@Update("UPDATE user SET name=#{name}, status=#{status}, authType=#{authType}, authId=#{authId}, agreement=#{agreement}, accToken=#{accToken}, mobile=#{mobile}, eMail=#{eMail} WHERE id=#{id}")
 	int updateUser(User user);
 }
