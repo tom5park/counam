@@ -33,7 +33,7 @@ $(function() {
 }); 
 
 
-function signinCallback(authResult) {
+function onCheckGoogleAuth(authResult) {
 	if (authResult['access_token']) {
 		counam.googleAuthInfo = authResult;
 		gapi.auth.setToken(authResult);
