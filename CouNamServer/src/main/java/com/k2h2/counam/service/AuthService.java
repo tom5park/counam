@@ -175,19 +175,4 @@ public class AuthService {
 		this.userMapper.updateUser(user);
 		session.removeAttribute("userId");
 	}
-	
-	@RequestMapping(value="/auth/deleteAccount.json")
-	@ResponseBody
-	public void deleteAccount(HttpSession session) {
-		String userId = (String) session.getAttribute("userId");
-		User user = new User();
-		user.setId(userId);
-		user.setName("탈퇴한 사용자");
-		user.setStatus(UserStatus.DELETED);
-		user.setAccToken("");
-		user.setAuthId("");
-		user.setAuthType(AuthType.UNKNOWN);
-		this.userMapper.updateUser(user);
-		session.removeAttribute("userId");
-	}
 }

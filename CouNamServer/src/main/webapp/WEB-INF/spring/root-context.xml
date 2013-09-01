@@ -9,7 +9,7 @@
 	
 	<bean id="counamDS" class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close">
         <property name="driverClassName" value="com.mysql.jdbc.Driver"/>
-        <property name="url" value="jdbc:mysql://222.235.220.97:3306/CouNam?characterEncoding=utf-8&amp;autoReconnect=true"/>
+        <property name="url" value="jdbc:mysql://counam:3306/CouNam?characterEncoding=utf-8&amp;autoReconnect=true"/>
         <property name="username" value="counam"/>
         <property name="password" value="WkaQhd3rmfmt?"/>
     </bean>
